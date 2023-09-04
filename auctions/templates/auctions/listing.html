@@ -1,0 +1,112 @@
+{% extends "auctions/layout.html" %}
+
+
+{% block body %}
+    
+    {% if user.is_authenticated %}
+        {% if hasWon %}
+        <div class="alert alert-success" role="alert">
+            Congratulations! You have won the auction.
+        </div>
+        {%endif%}
+        
+        {% if isOwner == False and bidPlaced %}
+            <div class="alert alert-success" role="alert">
+                Bid placed successfully!
+            </div>
+        {%elif isOwner and bidPlaced%}
+             <div class="alert alert-danger" role="alert">
+                The Owner cannot place Bid!
+            </div>
+        {%elif isOwner == False and bidPlaced  == False%}
+            <div class="alert alert-danger" role="alert">
+                Cannot place bid, the bidding price must be greater then the previous one.
+            </div>
+
+        {%endif%}
+        {% if isOwner and auctionClosed%}
+            <div class="alert alert-success" role="alert">
+                Auction Closed successfully!
+            </div>
+
+        {%endif%}
+
+        {% if present %}
+            <div class="mb-4 row">
+                <form action="{% url 'removeWatchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
+                </form>
+                {% if isOwner%}
+                    <form  action="{% url 'closeAuction' listing.id%}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger mx-2">Close Auction</button>
+                    </form>
+                {%endif%}
+            </div>
+            
+        {% else %}
+            <div class="mb-4 row">
+                <form action="{% url 'addWatchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Add to Wishlist</button>
+                </form>
+                {% if isOwner%}
+                    <form action="{% url 'closeAuction' listing.id%}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger mx-2">Close Auction</button>
+                    </form>
+                {%endif%}
+            </div>
+            
+        {% endif %}
+    {% endif %}
+
+
+
+    <h2>{{listing.title}}</h2>
+    <img src="{{listing.img}}" alt="{{listing.title}}" style="max-width:fit-content;">
+    <h4 class="my-3">Details: </h4>
+    <p>{{listing.description}}</p>
+    <h4 class=" mt-5">Price: ${{listing.price}}</h4>
+    {% if user.is_authenticated %}
+        <form action="{% url 'placeBid' listing.id%}" method="post">
+            {% csrf_token %}
+            <div class="my-3">
+                <input type="number" min="0" name="price" class="form-control my-2" id="price" placeholder="$99">
+                <button type="submit" class="btn btn-primary mt-2">Place Bid</button>
+            </div>
+        </form>
+    {%endif%}
+    <h2 class="mb-3">Comments: </h2>
+    <ul class="list-group">
+        {% if comments.count == 0%}
+        <p>No comments yet</p>
+        {%endif%}
+        {% for comment in comments %}
+        <div class="list-group-item  d-flex justify-content-between">
+            <p><strong>User: {{comment.user}}</strong></p>
+            <p>{{comment.time}}</p>
+        </div>
+        <li class="list-group-item mb-3 shadow-sm" id="comment">{{ comment.content }}</li>
+        {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+        <form method="post" action="{%url 'addComment' listing.id%}">
+            {%csrf_token%}
+            <div class="mb-3">
+                <label for="comment" class="form-label">Add comment: </label>
+                <textarea class="form-control" name = "comment" id="comment" rows="3"></textarea>
+                <button type="submit" class="btn btn-primary mt-2">Add</button>
+
+              </div>
+        </form>
+    {%endif%}
+
+    <h6 class="mt-5">Owner: {{listing.owner}}</h6>
+    <h6>{{listing.time}}</h6>
+
+
+
+
+{% endblock %}
