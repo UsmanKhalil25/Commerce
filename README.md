@@ -1,5 +1,10 @@
 # Commerce
 An eBay-like e-commerce auction site that will allow users to post auction listings, place bids on listings, comment on those listings, and add listings to a “watchlist.” This was Project 2 of HarvardX's CS50W course in 2021 and was built using Python, Django, CSS, HTML and Bootstrap.
+## Active Items page
+![Active Items](https://github.com/UsmanKhalil25/Commerce/assets/142806683/1b9a4f39-ff3c-4d68-8832-734e1ffee93e)
+## Item page
+![Screenshot 2023-08-07 233609](https://github.com/UsmanKhalil25/Commerce/assets/142806683/5849cb2d-81a6-4f20-92f4-f274678da0ba)
+
 # Specification
 This project was built against the following specification:
 
